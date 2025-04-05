@@ -1,10 +1,25 @@
-const Game = {
+const GameStateManager = {
   state: "splash",
   modes: {},
 };
 
+const Game = {
+  setup: function () {},
+  draw: function () {
+    background(0);
+    fill(255);
+    textSize(32);
+    textAlign(CENTER, CENTER);
+    text("Game State", width / 2, height / 2);
+  },
+  mousePressed: function () {
+    GameStateManager.state = "menu";
+  },
+};
+
 Splash = {
   logo: null,
+  setup: function () {},
   draw: function () {
     background(0);
     // Draw an image
@@ -18,7 +33,7 @@ Splash = {
   },
 
   mousePressed: function () {
-    Game.state = "menu";
+    GameStateManager.state = "menu";
   },
 };
 
@@ -30,7 +45,8 @@ Menu = {
     {
       label: "Start Game",
       action: () => {
-        Game.state = "game";
+        console.log("Start Game");
+        GameStateManager.state = "game";
       },
       handle: null,
     },
@@ -66,9 +82,7 @@ Menu = {
       }
     });
   },
-  mousePressed: function () {
-    Game.state = "splash";
-  },
+  mousePressed: function () {},
 };
 
 function preload() {
@@ -76,18 +90,23 @@ function preload() {
 }
 
 function mousePressed() {
-  Game.modes[Game.state].mousePressed();
+  GameStateManager.modes[GameStateManager.state].mousePressed();
 }
 
 function setup() {
   // Create canvas and put it in the canvas div to guess the size
   imageMode(CENTER);
 
-  Game.modes.splash = Splash;
-  Game.modes.menu = Menu;
-
   c = createCanvas(displayWidth, displayHeight).parent("#canvas");
   windowResized();
+
+  GameStateManager.modes.splash = Splash;
+  GameStateManager.modes.menu = Menu;
+  GameStateManager.modes.game = Game;
+
+  Object.keys(GameStateManager.modes).forEach((key) => {
+    GameStateManager.modes[key].setup();
+  });
 
   const scroll = () => {
     window.scrollBy({
@@ -102,9 +121,9 @@ function draw() {
   // Clear the canvas
   background(0);
   // Draw the current menu
-  if (Game.modes[Game.state]) {
-    Game.modes[Game.state].draw();
+  if (GameStateManager.modes[GameStateManager.state]) {
+    GameStateManager.modes[GameStateManager.state].draw();
   } else {
-    console.error("No menu found for state: " + Game.state);
+    console.error("No menu found for state: " + GameStateManager.state);
   }
 }
