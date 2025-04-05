@@ -1,0 +1,31 @@
+project:
+  type: website
+  preview:
+    port: 6499
+
+website:
+  title: "LD57"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+
+format:
+  html:
+    theme: 
+      - cosmo
+      - assets/ld57-theme.scss
+    css: styles.css
+    toc: false
+    page-layout: full
+    email-obfuscation: javascript
+    appendix-cite-as: display
+    title-block-style: manuscript
+    image: "assets/coverArt.png"
+    image-width: "640px"
+    image-height: "512px"
+    license: "MIT"
+
+
+
