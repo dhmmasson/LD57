@@ -61,7 +61,7 @@ Menu = {
   },
   checkButtons: function () {
     this.buttons.forEach((button) => {
-      if (button.handle.mousePressed) {
+      if (button.handle.isPressed) {
         button.action();
       }
     });
