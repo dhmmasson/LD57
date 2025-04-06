@@ -1,7 +1,7 @@
 //Resize canvas to fill the div
 function windowResized() {
   const size = select("#canvas").size();
-  console.log(size);
+
   // Square Board
   let minSize = min(size.width, size.height);
   resizeCanvas(minSize, minSize);
