@@ -1,19 +1,84 @@
 const GameStateManager = {
-  state: "splash",
+  state: "game",
   modes: {},
 };
+let palette = null;
 
 const Game = {
-  setup: function () {},
+  depth: 100,
+
+  images: null,
+  setup: function () {
+    this.pixels = [];
+    this.images.depth.loadPixels();
+    console.log(this);
+    this.pixels = this.images.depth.pixels.slice();
+    this.images.clean.loadPixels();
+    this.images.blur.loadPixels();
+
+    // Gaussian blur
+
+    this.resultImage = createImage(
+      this.images.depth.width,
+      this.images.depth.height
+    );
+    this.resultImage.loadPixels();
+  },
   draw: function () {
     background(0);
-    fill(255);
-    textSize(32);
-    textAlign(CENTER, CENTER);
-    text("Game State", width / 2, height / 2);
+    // Mouse position to image position
+
+    let Dx = Math.floor(mouseX / (width / this.images.depth.width));
+    let Dy = Math.floor(mouseY / (height / this.images.depth.height));
+    // COnstraint the values to the image size
+    Dx = constrain(Dx, 0, this.images.depth.width - 1);
+    Dy = constrain(Dy, 0, this.images.depth.height - 1);
+
+    // Get the pixel index
+    const index = (Dx + Dy * this.images.depth.width) * 4;
+
+    // Get the depth value
+    this.depth = this.pixels[index];
+    console.log(Dx, Dy, this.depth);
+    for (x = 0; x < this.images.depth.width; x++) {
+      for (y = 0; y < this.images.depth.height; y++) {
+        const index = (x + y * this.images.depth.width) * 4;
+
+        const focus = Math.abs(this.pixels[index] - this.depth) < 10;
+        if (focus) {
+          // copy the data from the pixel array
+          const r = this.images.clean.pixels[index];
+          const g = this.images.clean.pixels[index + 1];
+          const b = this.images.clean.pixels[index + 2];
+          this.resultImage.set(x, y, color(r, g, b, 255));
+        } else {
+          const r = this.images.blur.pixels[index];
+          const g = this.images.blur.pixels[index + 1];
+          const b = this.images.blur.pixels[index + 2];
+          this.resultImage.set(x, y, color(r, g, b, 255));
+        }
+      }
+    }
+    this.resultImage.set(Dx, Dy, color(255, 0, 0, 255));
+    for (i = 0; i < 10; i++) {
+      this.resultImage.set(Dx + i, Dy, color(255, 0, 0, 255));
+      this.resultImage.set(Dx - i, Dy, color(255, 0, 0, 255));
+      this.resultImage.set(Dx, Dy + i, color(255, 0, 0, 255));
+      this.resultImage.set(Dx, Dy - i, color(255, 0, 0, 255));
+    }
+
+    this.resultImage.updatePixels();
+    // Draw the image
+    imageMode(CENTER);
+    image(this.resultImage, width / 2, height / 2, width, height);
   },
   mousePressed: function () {
-    GameStateManager.state = "menu";
+    // Mouse position to image position
+    const Dx = Math.floor(mouseX / (width / this.images.depth.width));
+    const Dy = Math.floor(mouseY / (height / this.images.depth.height));
+    // Get the pixel index
+    const index = (Dx + Dy * this.images.depth.width) * 4;
+    this.depth = this.pixels[index];
   },
 };
 
@@ -87,6 +152,11 @@ Menu = {
 
 function preload() {
   Splash.logo = loadImage("/assets/splash_ai.png");
+  Game.images = {
+    blur: loadImage("/assets/blur.png"),
+    clean: loadImage("/assets/clean.png"),
+    depth: loadImage("/assets/depth.png"),
+  };
 }
 
 function mousePressed() {
@@ -94,6 +164,9 @@ function mousePressed() {
 }
 
 function setup() {
+  palette = createPalette(
+    "d48418-a86f24-705532-544839-383a40-2d3543-273244-212f45"
+  );
   // Create canvas and put it in the canvas div to guess the size
   imageMode(CENTER);
 
