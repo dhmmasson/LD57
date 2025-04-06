@@ -5,25 +5,25 @@ const GameStateManager = {
 let palette = null;
 
 function preload() {
-  Splash.logo = loadImage("/assets/splash_ai.png");
+  Splash.logo = loadImage("./assets/splash_ai.png");
   Game.images = {
-    blur: loadImage("/assets/blur.png"),
-    clean: loadImage("/assets/clean.png"),
-    depth: loadImage("/assets/depth.png"),
-    index: loadImage("/assets/objects.png"),
+    blur: loadImage("./assets/blur.png"),
+    clean: loadImage("./assets/clean.png"),
+    depth: loadImage("./assets/depth.png"),
+    index: loadImage("./assets/objects.png"),
   };
   Game.objectImages = {
-    letters: loadImage("/assets/objects/letters.png"),
-    coccinelle: loadImage("/assets/objects/coccinelle.png"),
-    blueBell: loadImage("/assets/objects/blueBell.png"),
-    oneEar: loadImage("/assets/objects/oneEar.png"),
+    letters: loadImage("./assets/objects/letters.png"),
+    coccinelle: loadImage("./assets/objects/coccinelle.png"),
+    blueBell: loadImage("./assets/objects/blueBell.png"),
+    oneEar: loadImage("./assets/objects/oneEar.png"),
   };
   soundFormats("mp3", "wav");
   // load Sound
-  Game.shutter = loadSound("/assets/audio/shutter");
+  Game.shutter = loadSound("./assets/audio/shutter");
 
   Game.shutter.setVolume(1);
-  Game.music = loadSound("/assets/music/EasterHunt");
+  Game.music = loadSound("./assets/music/EasterHunt");
   Game.musicIsPlaying = false;
 }
 
