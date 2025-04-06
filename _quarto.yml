@@ -3,7 +3,7 @@ project:
   preview:
     port: 6499
   resources: 
-    - ./assets/*.png
+    - ./assets/**/*.png
 
 website:
   title: "LD57"

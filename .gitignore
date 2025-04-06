@@ -137,3 +137,21 @@ dist
 
 /.quarto/
 /_site/
+ressources/output/blur/Image0001.png
+ressources/output/blur/Image0002.png
+ressources/output/blur/Image0005.png
+ressources/output/blur/Image0017.png
+ressources/output/clean/Image0001.png
+ressources/output/clean/Image0002.png
+ressources/output/clean/Image0005.png
+ressources/output/clean/Image0017.png
+ressources/output/depth/Image0001.png
+ressources/output/depth/Image0002.png
+ressources/output/depth/Image0005.png
+ressources/output/depth/Image0017.png
+ressources/output/index/Image0001.png
+ressources/output/index/Image0002.png
+ressources/output/index/Image0005.png
+ressources/output/index/Image0017.png
+**/*.blend1
+**/*.blend2

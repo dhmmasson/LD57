@@ -4,17 +4,38 @@ const GameStateManager = {
 };
 let palette = null;
 
+function preload() {
+  Splash.logo = loadImage("/assets/splash_ai.png");
+  Game.images = {
+    blur: loadImage("/assets/blur.png"),
+    clean: loadImage("/assets/clean.png"),
+    depth: loadImage("/assets/depth.png"),
+    index: loadImage("/assets/objects.png"),
+  };
+  Game.objectImages = {
+    letters: loadImage("/assets/objects/letters.png"),
+    coccinelle: loadImage("/assets/objects/coccinelle.png"),
+    blueBell: loadImage("/assets/objects/blueBell.png"),
+    oneEar: loadImage("/assets/objects/oneEar.png"),
+  };
+}
+
 const Game = {
-  depth: 100,
+  depth: -1,
 
   images: null,
+  objectIndices: {
+    7: { name: "letters", count: 4, found: 0 },
+    255: { name: "coccinelle", count: 5, found: 0 },
+    41: { name: "blueBell", count: 2, found: 0 },
+    61: { name: "oneEar", count: 1, found: 0 },
+  },
+  found: 4,
   setup: function () {
-    this.pixels = [];
     this.images.depth.loadPixels();
-    console.log(this);
-    this.pixels = this.images.depth.pixels.slice();
     this.images.clean.loadPixels();
     this.images.blur.loadPixels();
+    this.images.index.loadPixels();
 
     // Gaussian blur
 
@@ -25,7 +46,6 @@ const Game = {
     this.resultImage.loadPixels();
   },
   draw: function () {
-    background(0);
     // Mouse position to image position
 
     let Dx = Math.floor(mouseX / (width / this.images.depth.width));
@@ -38,47 +58,116 @@ const Game = {
     const index = (Dx + Dy * this.images.depth.width) * 4;
 
     // Get the depth value
-    this.depth = this.pixels[index];
-    console.log(Dx, Dy, this.depth);
-    for (x = 0; x < this.images.depth.width; x++) {
-      for (y = 0; y < this.images.depth.height; y++) {
-        const index = (x + y * this.images.depth.width) * 4;
+    const depth = this.images.depth.pixels[index];
+    if (depth !== this.depth) {
+      this.depth = this.images.depth.pixels[index];
+      for (x = 0; x < this.images.depth.width; x++) {
+        for (y = 0; y < this.images.depth.height; y++) {
+          const index = (x + y * this.images.depth.width) * 4;
 
-        const focus = Math.abs(this.pixels[index] - this.depth) < 10;
-        if (focus) {
-          // copy the data from the pixel array
-          const r = this.images.clean.pixels[index];
-          const g = this.images.clean.pixels[index + 1];
-          const b = this.images.clean.pixels[index + 2];
-          this.resultImage.set(x, y, color(r, g, b, 255));
-        } else {
-          const r = this.images.blur.pixels[index];
-          const g = this.images.blur.pixels[index + 1];
-          const b = this.images.blur.pixels[index + 2];
-          this.resultImage.set(x, y, color(r, g, b, 255));
+          const focus =
+            Math.abs(this.images.depth.pixels[index] - this.depth) < 10;
+          if (focus) {
+            // copy the data from the pixel array
+            const r = this.images.clean.pixels[index];
+            const g = this.images.clean.pixels[index + 1];
+            const b = this.images.clean.pixels[index + 2];
+            this.resultImage.set(x, y, color(r, g, b, 255));
+          } else {
+            const r = this.images.blur.pixels[index];
+            const g = this.images.blur.pixels[index + 1];
+            const b = this.images.blur.pixels[index + 2];
+            this.resultImage.set(x, y, color(r, g, b, 255));
+          }
         }
       }
+      this.resultImage.updatePixels();
     }
-    this.resultImage.set(Dx, Dy, color(255, 0, 0, 255));
-    for (i = 0; i < 10; i++) {
-      this.resultImage.set(Dx + i, Dy, color(255, 0, 0, 255));
-      this.resultImage.set(Dx - i, Dy, color(255, 0, 0, 255));
-      this.resultImage.set(Dx, Dy + i, color(255, 0, 0, 255));
-      this.resultImage.set(Dx, Dy - i, color(255, 0, 0, 255));
-    }
+    // Draw the objects at the bottom of the screen
 
-    this.resultImage.updatePixels();
     // Draw the image
     imageMode(CENTER);
     image(this.resultImage, width / 2, height / 2, width, height);
+    this.drawObjects();
+  },
+  drawObjects: function () {
+    const objectNames = Object.keys(this.objectIndices);
+    const objectCount = objectNames.length;
+
+    const sx = width / 2 - (objectCount * 64) / 2;
+    const sy = height - 64;
+    const w = 64;
+    const h = 64;
+    const offset = 0;
+    for (let i = 0; i < objectCount; i++) {
+      const objectName = objectNames[i];
+      const object = this.objectIndices[objectName];
+      const ObjectImage = this.objectImages[object.name];
+      if (image) {
+        imageMode(CENTER);
+        image(ObjectImage, sx + offset + i * w, sy, w, h);
+        fill(255);
+        textAlign(CENTER, CENTER);
+        textSize(16);
+        text(object.found + "/" + object.count, sx + offset + i * w, sy + 32);
+      }
+    }
   },
   mousePressed: function () {
-    // Mouse position to image position
+    // Get the pixel index
     const Dx = Math.floor(mouseX / (width / this.images.depth.width));
     const Dy = Math.floor(mouseY / (height / this.images.depth.height));
-    // Get the pixel index
+    // COnstraint the values to the image size
     const index = (Dx + Dy * this.images.depth.width) * 4;
-    this.depth = this.pixels[index];
+    // Get the index value
+    const indexValue = this.images.index.pixels[index];
+    console.log("Index value: " + indexValue);
+    this.removeObject(indexValue, Dx, Dy);
+    if (this.objectIndices[indexValue]) {
+      const object = this.objectIndices[indexValue];
+      console.log("Found object: " + object.name);
+
+      // Decrease the count
+      object.found++;
+      if (object.found == object.count) {
+        this.found--;
+        console.log("Found all objects: " + object.name);
+        if (this.found == 0) {
+          console.log("Found all objects");
+          GameStateManager.state = "menu";
+        }
+      }
+    }
+  },
+  removeObject: function (indexValue, Dx, Dy) {
+    const x = Dx;
+    const y = Dy;
+    const w = this.images.depth.width;
+    const h = this.images.depth.height;
+    const pixels = this.images.index.pixels;
+    const queue = [];
+    queue.push({ x, y });
+    const visited = new Set();
+    while (queue.length > 0) {
+      const { x, y } = queue.shift();
+      const index = (x + y * w) * 4;
+      if (visited.has(index)) {
+        continue;
+      }
+      visited.add(index);
+      // Check if the pixel is part of the object
+      if (pixels[index] === indexValue) {
+        // Set the pixel to transparent
+        pixels[index] = 0;
+        pixels[index + 1] = 0;
+        pixels[index + 2] = 0;
+        pixels[index + 3] = 0;
+        queue.push({ x: x + 1, y });
+        queue.push({ x: x - 1, y });
+        queue.push({ x, y: y + 1 });
+        queue.push({ x, y: y - 1 });
+      }
+    }
   },
 };
 
@@ -149,15 +238,6 @@ Menu = {
   },
   mousePressed: function () {},
 };
-
-function preload() {
-  Splash.logo = loadImage("/assets/splash_ai.png");
-  Game.images = {
-    blur: loadImage("/assets/blur.png"),
-    clean: loadImage("/assets/clean.png"),
-    depth: loadImage("/assets/depth.png"),
-  };
-}
 
 function mousePressed() {
   GameStateManager.modes[GameStateManager.state].mousePressed();
