@@ -4,6 +4,8 @@ project:
     port: 6499
   resources: 
     - ./assets/**/*.png
+    - ./assets/**/*.wav
+    - ./assets/**/*.mp3 
 
 website:
   title: "LD57"
