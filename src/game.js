@@ -18,6 +18,33 @@ function preload() {
     blueBell: loadImage("/assets/objects/blueBell.png"),
     oneEar: loadImage("/assets/objects/oneEar.png"),
   };
+  soundFormats("mp3", "wav");
+  // load Sound
+  Game.shutter = loadSound("/assets/audio/shutter");
+
+  Game.shutter.setVolume(1);
+  Game.music = loadSound("/assets/music/EasterHunt");
+  Game.musicIsPlaying = false;
+}
+
+function keyPressed() {
+  if (key === "m" || key === "M") {
+    if (Game.musicIsPlaying) {
+      Game.musicIsPlaying = false;
+      Game.music.stop();
+    } else {
+      Game.musicIsPlaying = true;
+      Game.music.setVolume(0.5);
+      Game.music.play();
+    }
+  }
+  if (key === "f" || key === "F") {
+    if (fullscreen()) {
+      fullscreen(false);
+    } else {
+      fullscreen(true);
+    }
+  }
 }
 
 const Game = {
@@ -94,11 +121,18 @@ const Game = {
     const objectNames = Object.keys(this.objectIndices);
     const objectCount = objectNames.length;
 
-    const sx = width / 2 - (objectCount * 64) / 2;
-    const sy = height - 64;
     const w = 64;
     const h = 64;
+    const sx = width / 2 - (objectCount * 64) / 2 + w / 2;
+    const sy = 64;
+
     const offset = 0;
+    rectMode(CENTER);
+    fill(0, 0, 0, 200);
+    rect(width / 2, sy + 10, objectCount * w + 20, h + 32, 20);
+    fill(palette.get(0));
+    textAlign(CENTER, CENTER);
+    textSize(16);
     for (let i = 0; i < objectCount; i++) {
       const objectName = objectNames[i];
       const object = this.objectIndices[objectName];
@@ -106,12 +140,21 @@ const Game = {
       if (image) {
         imageMode(CENTER);
         image(ObjectImage, sx + offset + i * w, sy, w, h);
-        fill(255);
-        textAlign(CENTER, CENTER);
-        textSize(16);
-        text(object.found + "/" + object.count, sx + offset + i * w, sy + 32);
+        text(
+          object.found + "/" + object.count,
+          sx + offset + i * w,
+          sy + 32 + 10
+        );
       }
     }
+    // Add text on the top right that says "M for Mute" and "F for Fullscreen"
+    textAlign(RIGHT, TOP);
+    textSize(16);
+    fill(palette.get(0));
+    text("M for Mute", width - 20, 20);
+    text("F for Fullscreen", width - 20, 40);
+    textAlign(CENTER, CENTER);
+    textSize(16);
   },
   mousePressed: function () {
     // Get the pixel index
@@ -126,7 +169,10 @@ const Game = {
     if (this.objectIndices[indexValue]) {
       const object = this.objectIndices[indexValue];
       console.log("Found object: " + object.name);
-
+      // Play the sound
+      if (this.shutter) {
+        this.shutter.play();
+      }
       // Decrease the count
       object.found++;
       if (object.found == object.count) {
@@ -187,7 +233,14 @@ Splash = {
   },
 
   mousePressed: function () {
-    GameStateManager.state = "menu";
+    GameStateManager.state = "game";
+    Game.musicIsPlaying = true;
+    Game.music.play();
+    Game.music.loop();
+    Game.music.setVolume(0.5);
+    Game.music.setLoop(true);
+
+    Game.startTime = millis();
   },
 };
 
