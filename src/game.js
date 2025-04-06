@@ -303,7 +303,7 @@ function setup() {
   // Create canvas and put it in the canvas div to guess the size
   imageMode(CENTER);
 
-  c = createCanvas(displayWidth, displayHeight).parent("#canvas");
+  c = createCanvas(displayWidth * 0.8, displayHeight * 0.8).parent("#canvas");
   windowResized();
 
   GameStateManager.modes.splash = Splash;
