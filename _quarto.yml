@@ -8,12 +8,25 @@ project:
     - ./assets/**/*.mp3 
 
 website:
-  title: "LD57"
+  title: "Focus Hunt"
+  site-url: "https://dhmmasson.github.io/focusHunt/"
   navbar:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+  open-graph:   
+    locale: "en_US"    
+  description: "My Entry for Ludum Dare 57. A game made in 48 hours."
+  
+  twitter-card: 
+    card-style: "summary_large_image"
+    creator: "@dhmmasson"
+  page-footer: 
+    left: 
+      - text: "Ludum Dare 57 (2025) - Dimitri Masson - MIT License"
+    right:
+      - text: "Star the project on GitHub"
+      - icon: github
 
 format:
   html:
@@ -26,7 +39,7 @@ format:
     email-obfuscation: javascript
     appendix-cite-as: display
     title-block-style: manuscript
-    image: "assets/splash_ai.png"
+    image: "assets/splash.png"
     image-width: "640px"
     image-height: "512px"
     license: "MIT"
