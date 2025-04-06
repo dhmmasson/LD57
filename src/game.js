@@ -1,5 +1,5 @@
 const GameStateManager = {
-  state: "game",
+  state: "splash",
   modes: {},
 };
 let palette = null;
@@ -181,9 +181,54 @@ const Game = {
         if (this.found == 0) {
           console.log("Found all objects");
           GameStateManager.state = "menu";
+          Game.endTime = millis();
+          const FinishTime = Math.floor(Game.endTime - Game.startTime);
+
+          // Ask the user its name
+          const name = prompt("Enter your name");
+          if (name) {
+            //clean the name
+            const cleanName = name.replace(/[^a-zA-Z0-9]/g, "");
+
+            const urlBase =
+              "http://dreamlo.com/lb/niC_UulGz0KkFKyAy1yUNA6St-4c9bIUmY3-WCqRZYCA";
+            const url = `${urlBase}/add/${cleanName}/${FinishTime}/${FinishTime}`;
+            console.log("URL: ", url);
+            fetch(url).finally(() => {
+              this.getScore();
+            });
+          }
         }
       }
     }
+  },
+  getScore: function () {
+    // get the leaderboard
+    const ScoreUrl = `http://dreamlo.com/lb/67f304df8f40c1c224f3d672/json`;
+    fetch(ScoreUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        //{"dreamlo":{"leaderboard":{"entry":{"name":"Dimitri","score":"0","seconds":"0","text":"","date":"4/6/2025 10:57:37 PM"}}}}
+        console.log("Score data: ", data);
+        const scores = data.dreamlo.leaderboard.entry;
+        if (!scores) {
+          console.error("No scores found");
+          return;
+        }
+        if (!Array.isArray(scores)) {
+          console.error("Scores is not an array");
+          return;
+        }
+        // Sort the scores by score
+        scores.sort((a, b) => a.score - b.score);
+        // Get the top 10 scores
+        const topScores = scores.slice(0, 10);
+        console.log("Top Scores: ", topScores);
+        Game.topScores = topScores;
+      })
+      .catch((error) => {
+        console.error("Error fetching scores: ", error);
+      });
   },
   removeObject: function (indexValue, Dx, Dy) {
     const x = Dx;
@@ -224,12 +269,33 @@ Splash = {
     background(0);
     // Draw an image
     imageMode(CENTER);
-    image(this.logo, width / 2, height / 2, width, height);
+    image(Game.images.blur, width / 2, height / 2, width, height);
 
-    fill(255);
-    textSize(32);
+    fill(0, 0, 0, 200);
+    rectMode(CENTER);
+    rect(width / 2, height / 2, width - 20, height - 20, 20);
+
+    fill(palette.get(0));
+    textSize(64);
     textAlign(CENTER, CENTER);
-    text("Titan's Depth", width / 2, height / 2);
+    text("Focus Hunt", width / 2, height / 2);
+    textSize(20);
+    text("A Look-and-Find in the Field of Depth", width / 2, height / 2 + 64);
+    textSize(20);
+    fill(palette.get(0));
+
+    description = [
+      "Move your mouse to get your camera to focus",
+      "Look and Find : ",
+      "1 one eared rabbit,",
+      "2 Blue bells,",
+      "the letters ALBA,",
+      "and 5 ladybugs",
+      "Click to take a picture",
+    ];
+    description.forEach((line, i) => {
+      text(line, width / 2, height / 2 + 128 + i * 32);
+    });
   },
 
   mousePressed: function () {
@@ -278,9 +344,32 @@ Menu = {
     fill(255);
     textSize(32);
     textAlign(CENTER, CENTER);
-    text(this.title, width / 2, height / 2);
-    this.checkButtons();
-    drawGui();
+    text("Congratulation You Win", width / 2, height / 2 - 64);
+    textSize(16);
+    text("You found all the objects", width / 2, height / 2 - 32);
+    text(
+      `Time : ${
+        Math.floor((Game.endTime - Game.startTime) / 10) / 100
+      } seconds`,
+      width / 2,
+      height / 2
+    );
+
+    if (Game.topScores) {
+      textSize(20);
+      text("Top Scores", width / 2, height / 2 + 64);
+      const scores = Game.topScores;
+      const y = height / 2 + 64 + 32;
+      scores.forEach((score, i) => {
+        text(
+          `${i + 1}. ${score.name} in ${
+            Math.floor(score.score / 10) / 100
+          } seconds`,
+          width / 2,
+          y + i * 32
+        );
+      });
+    }
   },
   checkButtons: function () {
     this.buttons.forEach((button) => {
