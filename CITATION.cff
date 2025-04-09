@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+title: Focus Hunt
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Dimitri
+    family-names: Masson
+    orcid: 'https://orcid.org/0000-0002-7072-3146'
+    email: dhm.masson@gmail.com
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.15181101
+    description: 'DOI of the Fixed version'
+  - type: doi
+    value: 10.5281/zenodo.15181046
+    description: 'DOI of the Compo Release'
+  - type: doi
+    value: 10.5281/zenodo.15181045
+    description: 'DOI of all versions'
+repository-code: 'https://github.com/dhmmasson/focusHunt'
+url: 'dhmmasson.github.io/focusHunt/'
+abstract: >-
+  Focus Hunt is a look and find game 
+  with a very shallow depth of field, 
+  Focus to find the easter elements 
+  in the scene.
+keywords:
+  - Ludum Dare
+  - Game
+  - Web
+  - Javascript
+license: MIT
+version: v1.0.1
+date-released: '2025-04-06'
