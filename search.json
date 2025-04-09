@@ -5,5 +5,33 @@
     "title": "LD57",
     "section": "",
     "text": "ReuseMITCitationFor attribution, please cite this work as:\nMasson, Dimitri. 2024. “LD57.” LudumDare 57. https://dhmmasson.github.io/focusHunt/."
+  },
+  {
+    "objectID": "CHANGELOG.html",
+    "href": "CHANGELOG.html",
+    "title": "Focus Hunt",
+    "section": "",
+    "text": "game: split the image in chunk for faster rendering"
+  },
+  {
+    "objectID": "CHANGELOG.html#v1.0.2-2025-04-09",
+    "href": "CHANGELOG.html#v1.0.2-2025-04-09",
+    "title": "Focus Hunt",
+    "section": "",
+    "text": "game: split the image in chunk for faster rendering"
+  },
+  {
+    "objectID": "CHANGELOG.html#v1.0.1-2025-04-09",
+    "href": "CHANGELOG.html#v1.0.1-2025-04-09",
+    "title": "Focus Hunt",
+    "section": "v1.0.1 (2025-04-09)",
+    "text": "v1.0.1 (2025-04-09)\n\nRefactor\n\ngame: remove unused touchGui library\n\n\n\nPerf\n\ngame: improve loading time by loading the music later"
+  },
+  {
+    "objectID": "CHANGELOG.html#v1.0.0-2025-04-09",
+    "href": "CHANGELOG.html#v1.0.0-2025-04-09",
+    "title": "Focus Hunt",
+    "section": "v1.0.0 (2025-04-09)",
+    "text": "v1.0.0 (2025-04-09)\n\nFeat\n\nupdate website title and metadata; add splash image\nupdate blender source files\nadd the sounds for the shutter and the music\nadd a leader board\nadd music and full screen\nimage: Latest version of the hunt\nfound the object in the scene\nadd easterScene Blend file\nadd depth of field effect\nadd a game menu mode\nadd a splash screen\n\n\n\nFix\n\nupdate asset paths to use relative URLs\ncorrect initial canvas size\nremove debug log from windowResized function\nupdate button handling method in Menu\ncorrect p5 library paths in index.qmd\n\n\n\nRefactor\n\nrename Game into GameStateManager\n\n\n\nPerf\n\nupdate p5js to include willReadFrequently: true"
   }
 ]
