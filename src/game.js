@@ -321,33 +321,7 @@ Splash = {
 
 Menu = {
   title: "Main Menu",
-  buttonSize: 200,
-  buttonSpacing: 10,
-  buttons: [
-    {
-      label: "Start Game",
-      action: () => {
-        console.log("Start Game");
-        GameStateManager.state = "game";
-      },
-      handle: null,
-    },
-    { label: "Options", action: () => {}, handle: null },
-  ],
-  setup: function () {
-    this.gui = createGui();
-    let y = height / 2 - (this.buttons.length * 32) / 2;
-    this.buttons.forEach((button) => {
-      button.handle = createButton(
-        button.label,
-        width / 2 - this.buttonSize / 2,
-        y,
-        this.buttonSize,
-        32
-      );
-      y += 32 + this.buttonSpacing;
-    });
-  },
+  setup: function () {},
   draw: function () {
     background(0);
     fill(255);
@@ -380,13 +354,7 @@ Menu = {
       });
     }
   },
-  checkButtons: function () {
-    this.buttons.forEach((button) => {
-      if (button.handle.isPressed) {
-        button.action();
-      }
-    });
-  },
+
   mousePressed: function () {},
 };
 
