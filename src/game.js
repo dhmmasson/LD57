@@ -63,18 +63,17 @@ const Game = {
     this.images.clean.loadPixels();
     this.images.blur.loadPixels();
     this.images.index.loadPixels();
-
-    // Gaussian blur
-
-    this.resultImage = createImage(
-      this.images.depth.width,
-      this.images.depth.height
-    );
+    this.blockSizeX = Math.floor(this.images.depth.width / 5);
+    this.blockSizeY = Math.floor(this.images.depth.height / 5);
+    // Split the image in 5x5
+    this.resultImage = createImage(this.blockSizeX, this.blockSizeY);
     this.resultImage.loadPixels();
   },
+
   draw: function () {
     // Mouse position to image position
-
+    imageMode(CORNER);
+    image(this.images.blur, 0, 0, width, height);
     let Dx = Math.floor(mouseX / (width / this.images.depth.width));
     let Dy = Math.floor(mouseY / (height / this.images.depth.height));
     // COnstraint the values to the image size
@@ -83,38 +82,88 @@ const Game = {
 
     // Get the pixel index
     const index = (Dx + Dy * this.images.depth.width) * 4;
-
     // Get the depth value
     const depth = this.images.depth.pixels[index];
-    if (depth !== this.depth) {
-      this.depth = this.images.depth.pixels[index];
-      for (x = 0; x < this.images.depth.width; x++) {
-        for (y = 0; y < this.images.depth.height; y++) {
-          const index = (x + y * this.images.depth.width) * 4;
 
-          const focus =
-            Math.abs(this.images.depth.pixels[index] - this.depth) < 10;
-          if (focus) {
-            // copy the data from the pixel array
-            const r = this.images.clean.pixels[index];
-            const g = this.images.clean.pixels[index + 1];
-            const b = this.images.clean.pixels[index + 2];
-            this.resultImage.set(x, y, color(r, g, b, 255));
-          } else {
-            const r = this.images.blur.pixels[index];
-            const g = this.images.blur.pixels[index + 1];
-            const b = this.images.blur.pixels[index + 2];
-            this.resultImage.set(x, y, color(r, g, b, 255));
+    this.depth = lerp(this.depth, depth, 0.2);
+    const clean = this.images.clean.pixels;
+    const blur = this.images.blur.pixels;
+
+    for (let gridX = 0; gridX < 5; gridX++) {
+      for (let gridY = 0; gridY < 5; gridY++) {
+        const subImage = this.resultImage;
+        const startX = gridX * this.blockSizeX;
+        const startY = gridY * this.blockSizeY;
+
+        let blockChanged = false;
+
+        for (let x = 0; x < this.blockSizeX; x++) {
+          for (let y = 0; y < this.blockSizeY; y++) {
+            const indexSrc =
+              (startX + x + (startY + y) * this.images.depth.width) * 4;
+            const indexDest = (x + y * this.blockSizeX) * 4;
+
+            subImage.pixels[indexDest] = blur[indexSrc];
+            subImage.pixels[indexDest + 1] = blur[indexSrc + 1];
+            subImage.pixels[indexDest + 2] = blur[indexSrc + 2];
+            subImage.pixels[indexDest + 3] = blur[indexSrc + 3];
+
+            const focus =
+              Math.abs(this.images.depth.pixels[indexSrc] - this.depth) < 15;
+            let focalDistance =
+              Math.abs(this.images.depth.pixels[indexSrc] - depth) / 10;
+            // Clamp the value between 0 and 1
+            focalDistance = constrain(focalDistance, 0, 1);
+            // focalDistance = focalDistance * focalDistance;
+
+            if (focus) {
+              blockChanged = true;
+
+              subImage.pixels[indexDest] = lerp(
+                clean[indexSrc],
+                blur[indexSrc],
+                focalDistance
+              );
+              subImage.pixels[indexDest + 1] = lerp(
+                clean[indexSrc + 1],
+                blur[indexSrc + 1],
+                focalDistance
+              );
+              subImage.pixels[indexDest + 2] = lerp(
+                clean[indexSrc + 2],
+                blur[indexSrc + 2],
+                focalDistance
+              );
+              subImage.pixels[indexDest + 3] = lerp(
+                clean[indexSrc + 3],
+                blur[indexSrc + 3],
+                focalDistance
+              );
+            }
+            blockChanged = true;
           }
         }
+
+        if (blockChanged) {
+          subImage.updatePixels();
+
+          copy(
+            subImage,
+            0,
+            0,
+            this.blockSizeX * 2,
+            this.blockSizeY * 2, // Why *2 !
+            (gridX * width) / 5,
+            (gridY * height) / 5,
+            canvas.width / 5,
+            canvas.height / 5
+          );
+        }
       }
-      this.resultImage.updatePixels();
     }
+
     // Draw the objects at the bottom of the screen
 
-    // Draw the image
-    imageMode(CENTER);
-    image(this.resultImage, width / 2, height / 2, width, height);
     this.drawObjects();
   },
   drawObjects: function () {
