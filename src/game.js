@@ -111,7 +111,7 @@ const Game = {
             const focus =
               Math.abs(this.images.depth.pixels[indexSrc] - this.depth) < 15;
             let focalDistance =
-              Math.abs(this.images.depth.pixels[indexSrc] - depth) / 10;
+              Math.abs(this.images.depth.pixels[indexSrc] - depth) / 15;
             // Clamp the value between 0 and 1
             focalDistance = constrain(focalDistance, 0, 1);
             // focalDistance = focalDistance * focalDistance;
