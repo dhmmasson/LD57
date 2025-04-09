@@ -4,6 +4,7 @@ project:
     port: 6499
   resources: 
     - ./assets/**/*.png
+    - ./assets/**/*.jpg
     - ./assets/**/*.wav
     - ./assets/**/*.mp3 
 

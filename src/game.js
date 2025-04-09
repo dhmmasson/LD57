@@ -5,7 +5,7 @@ const GameStateManager = {
 let palette = null;
 
 function preload() {
-  Splash.logo = loadImage("./assets/splash_ai.png");
+  Splash.logo = loadImage("./assets/splash.jpg");
   Game.images = {
     blur: loadImage("./assets/blur.png"),
     clean: loadImage("./assets/clean.png"),
@@ -23,7 +23,7 @@ function preload() {
   Game.shutter = loadSound("./assets/audio/shutter");
 
   Game.shutter.setVolume(1);
-  Game.music = loadSound("./assets/music/EasterHunt");
+
   Game.musicIsPlaying = false;
 }
 
@@ -265,11 +265,17 @@ const Game = {
 Splash = {
   logo: null,
   setup: function () {},
+  first: true,
+  loadMusic: function () {
+    this.first = false;
+
+    Game.music = loadSound("./assets/music/EasterHunt");
+  },
   draw: function () {
     background(0);
     // Draw an image
     imageMode(CENTER);
-    image(Game.images.blur, width / 2, height / 2, width, height);
+    image(this.logo, width / 2, height / 2, width, height);
 
     fill(0, 0, 0, 200);
     rectMode(CENTER);
@@ -296,6 +302,9 @@ Splash = {
     description.forEach((line, i) => {
       text(line, width / 2, height / 2 + 128 + i * 32);
     });
+    if (this.first) {
+      this.loadMusic();
+    }
   },
 
   mousePressed: function () {
@@ -394,6 +403,14 @@ function setup() {
 
   c = createCanvas(displayWidth * 0.8, displayHeight * 0.8).parent("#canvas");
   windowResized();
+
+  // Set the background color
+  background(0);
+  // Write loading text
+  fill(255);
+  textSize(palette.get(0));
+  textAlign(CENTER, CENTER);
+  text("Loading...", width / 2, height / 2);
 
   GameStateManager.modes.splash = Splash;
   GameStateManager.modes.menu = Menu;
