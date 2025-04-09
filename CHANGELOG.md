@@ -1,3 +1,9 @@
+## v1.0.2 (2025-04-09)
+
+### Perf
+
+- **game**: split the image in chunk for faster rendering
+
 ## v1.0.1 (2025-04-09)
 
 ### Refactor
