@@ -1,3 +1,13 @@
+## v1.0.1 (2025-04-09)
+
+### Refactor
+
+- **game**: remove unused touchGui library
+
+### Perf
+
+- **game**: improve loading time by loading the music later
+
 ## v1.0.0 (2025-04-09)
 
 ### Feat
