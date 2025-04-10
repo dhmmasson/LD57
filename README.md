@@ -7,8 +7,11 @@
 
 # 🎯 Focus Hunt
 
-**Focus Hunt** is my entry for **Ludum Dare 57**.  
+**Focus Hunt** is my entry for **[Ludum Dare 57](https://ldjam.com/events/ludum-dare/57/focus-hunt)**.  
+
 It's a _look-and-find_ game with an extreme shallow depth of field. Focus carefully to spot and capture the hidden Easter elements scattered throughout the scene!
+
+[Play and rate the Game on ldjam.com](https://ldjam.com/events/ludum-dare/57/focus-hunt)
 
 ---
 
