@@ -11,14 +11,21 @@
     "href": "CHANGELOG.html",
     "title": "Focus Hunt",
     "section": "",
-    "text": "game: split the image in chunk for faster rendering"
+    "text": "replace hardcoded x2 by pixel density\nfix blur fuzziness to be less intense"
+  },
+  {
+    "objectID": "CHANGELOG.html#v1.0.3-2025-04-12",
+    "href": "CHANGELOG.html#v1.0.3-2025-04-12",
+    "title": "Focus Hunt",
+    "section": "",
+    "text": "replace hardcoded x2 by pixel density\nfix blur fuzziness to be less intense"
   },
   {
     "objectID": "CHANGELOG.html#v1.0.2-2025-04-09",
     "href": "CHANGELOG.html#v1.0.2-2025-04-09",
     "title": "Focus Hunt",
-    "section": "",
-    "text": "game: split the image in chunk for faster rendering"
+    "section": "v1.0.2 (2025-04-09)",
+    "text": "v1.0.2 (2025-04-09)\n\nPerf\n\ngame: split the image in chunk for faster rendering"
   },
   {
     "objectID": "CHANGELOG.html#v1.0.1-2025-04-09",

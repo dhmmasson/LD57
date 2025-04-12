@@ -151,8 +151,8 @@ const Game = {
             subImage,
             0,
             0,
-            this.blockSizeX * 2,
-            this.blockSizeY * 2, // Why *2 !
+            this.blockSizeX * pixelDensity(),
+            this.blockSizeY * pixelDensity(),
             (gridX * width) / 5,
             (gridY * height) / 5,
             canvas.width / 5,
