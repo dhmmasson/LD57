@@ -44,6 +44,8 @@ function keyPressed() {
     } else {
       fullscreen(true);
     }
+    select("#canvas").toggleClass("fullscreen");
+    windowResized();
   }
 }
 
